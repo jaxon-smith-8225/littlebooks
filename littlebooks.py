@@ -5,7 +5,7 @@ import shutil
 
 def getSignatureConfig(numPages):
     if numPages < 100:
-        return 8, [0, 7, 2, 5, 6, 1, 4, 3]
+        return 8, [7, 0, 5, 2, 1, 6, 3, 4]
     else:
         return 16, [15, 0, 13, 2, 1, 14, 3, 12, 11, 4, 9, 6, 5, 10, 7, 8]
     
@@ -74,7 +74,7 @@ def createSigLayout(inputPath, outputPath):
             row = j // 2
             col = j % 2
 
-            x = pageHeight * row
+            x = pageHeight + pageHeight * row
             y = pageWidth * col
 
             transformation = (Transformation()
