@@ -26,19 +26,19 @@ def createSigLayout(inputPath, outputPath):
     pageWidth = float(firstPage.mediabox.width)
     pageHeight = float(firstPage.mediabox.height)
 
-    # Add all original pages
+    # add og pages
     for bookPage in reader.pages:
         writer.add_page(bookPage)
 
-    # Add blank pages to complete signatures
+    # blank pages to complete signatures
     addBlankPages(writer, numPages, sigSize, pageWidth, pageHeight)
 
-    # Write to temp file
+    # write tempnfile
     tempPath = outputPath.with_suffix(".temp.pdf")
     with open(tempPath, "wb") as f:
         writer.write(f)
 
-    # Second pass: reorder into signatures
+    # 2nd pass --> reorder signsture
     tempReader = PdfReader(tempPath)
     totalPages = len(tempReader.pages)
     sigWriter = PdfWriter()
@@ -49,7 +49,7 @@ def createSigLayout(inputPath, outputPath):
             if page_index < totalPages:  # Check bounds
                 sigWriter.add_page(tempReader.pages[page_index])
 
-    # Write signature-ordered pages
+    # write signature ordered pairs
     sigTempPath = outputPath.with_suffix('.sig.temp.pdf')
     with open(sigTempPath, "wb") as f:
         sigWriter.write(f)
