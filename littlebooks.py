@@ -87,7 +87,7 @@ def fourPerPage(inputPath, scale=1, margin=0):
         writer.write(f)
 
 if __name__ == "__main__":
-    bookName = "EthicsOfAmbiguity"
+    bookName = "EthicsOfAmbiguity" # CHANGE THIS VARIABLE FOR DIFFERENT BOOKS
     littlebookPath = f"{bookName}_littlebook.pdf"
 
     copyString = f"cp {bookName}.pdf ./{bookName}_littlebook.pdf"
