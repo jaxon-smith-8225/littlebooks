@@ -1,10 +1,11 @@
 from pypdf import PdfReader, PdfWriter, PageObject, Transformation
 import argparse
 from pathlib import Path
+import shutil
 
 def getSignatureConfig(numPages):
     if numPages < 100:
-        return 8, [7, 0, 5, 2, 1, 6, 3, 4]
+        return 8, [0, 7, 2, 5, 6, 1, 4, 3]
     else:
         return 16, [15, 0, 13, 2, 1, 14, 3, 12, 11, 4, 9, 6, 5, 10, 7, 8]
     
@@ -25,19 +26,19 @@ def createSigLayout(inputPath, outputPath):
     pageWidth = float(firstPage.mediabox.width)
     pageHeight = float(firstPage.mediabox.height)
 
-    # add all original pages
+    # Add all original pages
     for bookPage in reader.pages:
         writer.add_page(bookPage)
 
-    # add blank pages to complete signatures
+    # Add blank pages to complete signatures
     addBlankPages(writer, numPages, sigSize, pageWidth, pageHeight)
 
-    # write temp file
+    # Write to temp file
     tempPath = outputPath.with_suffix(".temp.pdf")
     with open(tempPath, "wb") as f:
         writer.write(f)
 
-    # 2nd pass --> reorder into signatures
+    # Second pass: reorder into signatures
     tempReader = PdfReader(tempPath)
     totalPages = len(tempReader.pages)
     sigWriter = PdfWriter()
@@ -48,18 +49,19 @@ def createSigLayout(inputPath, outputPath):
             if page_index < totalPages:  # Check bounds
                 sigWriter.add_page(tempReader.pages[page_index])
 
-    # write signature ordered layout
+    # Write signature-ordered pages
     sigTempPath = outputPath.with_suffix('.sig.temp.pdf')
     with open(sigTempPath, "wb") as f:
         sigWriter.write(f)
     
-    # 3rd pass --> 4 per page layout
+    # Third pass: create 4-per-page layout
     sigReader = PdfReader(sigTempPath)
     finalWriter = PdfWriter()
 
     outputWidth = pageHeight * 2
     outputHeight = pageWidth * 2
 
+    # Use the signature-ordered pages, not original pages
     for i in range(0, len(sigReader.pages), 4):
         outputPage = PageObject.create_blank_page(
             width=outputWidth,
@@ -72,7 +74,7 @@ def createSigLayout(inputPath, outputPath):
             row = j // 2
             col = j % 2
 
-            x = pageHeight + (pageHeight * row)
+            x = pageHeight * row
             y = pageWidth * col
 
             transformation = (Transformation()
@@ -83,11 +85,11 @@ def createSigLayout(inputPath, outputPath):
 
         finalWriter.add_page(outputPage)
 
-    # write to output
+    # Write to output path, not input path
     with open(outputPath, "wb") as f:
         finalWriter.write(f)
 
-    # clean
+    # Clean up temp files
     tempPath.unlink(missing_ok=True)
     sigTempPath.unlink(missing_ok=True)
 
