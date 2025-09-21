@@ -54,14 +54,14 @@ def createSigLayout(inputPath, outputPath):
     with open(sigTempPath, "wb") as f:
         sigWriter.write(f)
     
-    # Third pass: create 4-per-page layout
+    # 3rd pass --> create 4-per-page layout
     sigReader = PdfReader(sigTempPath)
     finalWriter = PdfWriter()
 
     outputWidth = pageHeight * 2
     outputHeight = pageWidth * 2
 
-    # Use the signature-ordered pages, not original pages
+    # 4-per-page format
     for i in range(0, len(sigReader.pages), 4):
         outputPage = PageObject.create_blank_page(
             width=outputWidth,
@@ -85,11 +85,11 @@ def createSigLayout(inputPath, outputPath):
 
         finalWriter.add_page(outputPage)
 
-    # Write to output path, not input path
+    # write to output path
     with open(outputPath, "wb") as f:
         finalWriter.write(f)
 
-    # Clean up temp files
+    # clean temp
     tempPath.unlink(missing_ok=True)
     sigTempPath.unlink(missing_ok=True)
 
