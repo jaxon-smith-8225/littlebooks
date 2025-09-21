@@ -46,7 +46,7 @@ def signatureSplitting(inputPath):
     with open(inputPath, "wb") as f:
         writer.write(f)
 
-def fourPerPage(inputPath, scale=1, margin=20): 
+def fourPerPage(inputPath, scale=1, margin=0): 
     # formats pre-ordered signature pages to be printed
 
     reader = PdfReader(inputPath)
@@ -87,7 +87,7 @@ def fourPerPage(inputPath, scale=1, margin=20):
         writer.write(f)
 
 if __name__ == "__main__":
-    bookName = "SailorFromGrace"
+    bookName = "EthicsOfAmbiguity"
     littlebookPath = f"{bookName}_littlebook.pdf"
 
     copyString = f"cp {bookName}.pdf ./{bookName}_littlebook.pdf"
