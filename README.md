@@ -1,3 +1,3 @@
 # littlebooks
 
-Usage: python littlebooks.py --book {bookname w/o .pdf suffix}
+Usage: python littlebooks.py --book {bookname}.pdf
